@@ -1,0 +1,84 @@
+stages:
+    - build
+    - small_test
+    - big_test
+    - deploy_master
+    - deploy_branch
+
+build:
+    stage: build
+    script:
+    - baseDir=$(pwd)
+    - mkdir -p /tmp/singularity-bootstrap
+    - rm -rf /tmp/singularity-bootstrap 
+    - mkdir -p /tmp/singularity-bootstrap
+    - cd /tmp/singularity-bootstrap
+    - git clone -b boldqc2-singularity-vm_local --single-branch git@ncfcode.rc.fas.harvard.edu:nrg/resources.git
+    - mv resources/resources.tar ./resources.tar
+    - git clone --depth 1 git@ncfcode.rc.fas.harvard.edu:nrg/boldqc2.git
+    - mv boldqc2/Singularity ./Singularity
+    - /usr/local/bin/singularity create --size 3500 boldqc2.img
+    - sudo /usr/local/bin/singularity bootstrap boldqc2.img Singularity
+    - /usr/local/bin/singularity exec boldqc2.img extqc.py --label test_eyetracker --project scantest --scan 10 --skip 4 --mask-threshold 150 --snap-x 8 --snap-y 6 --output-dir /tmp/singularity-bootstrap/pipelineOut --xnat cbscentral
+    - cd "$baseDir"
+    
+small_test:
+    stage: small_test
+    script:
+    - diff <(sed -n '6,72p' /tmp/singularity-bootstrap/pipelineOut/extended-qc/*_auto_report.txt) <(sed -n '6,72p' /tmp/singularity-bootstrap/boldqc2/test_eyetracker_BOLD_10_EQC_auto_report.txt)
+
+big_test:
+    stage: big_test
+    script:
+    - cp /tmp/singularity-bootstrap/boldqc2.img ./
+    - > 
+      ssh ncflogin4.rc.fas.harvard.edu
+      "module load boldqc2-tests && top_n_test.py --script '$(pwd)/singularity_tmp_boldqc.sh --boldqcimg $(pwd)/boldqc2.img' --db-cache /ncf/nrg/tmp/boldqc2-tests/db-cache"
+    only:
+    - master@nrg/boldqc2
+
+deploy_master:
+    stage: deploy_master
+    script:
+    - cp /tmp/singularity-bootstrap/boldqc2.img /users/nrgadmin/containers/boldqc2.img
+    - ssh ncflogin4.rc.fas.harvard.edu
+    - >
+      curl
+      --silent
+      --location
+      --output /dev/null
+      --write-out "%{http_code} %{url_effective}\n"
+      --request POST
+      --form token=f47b8061b4f4de57c3d0515009afc7
+      --form ref=master
+      --form "variables[CI_PROJECT_NAMESPACE]=$CI_PROJECT_NAMESPACE"
+      --form "variables[CI_PROJECT_NAME]=$CI_PROJECT_NAME"
+      --form "variables[CI_COMMIT_REF_NAME]=$CI_COMMIT_REF_NAME"
+      --form "variables[CI_COMMIT_TAG]=$CI_COMMIT_TAG"
+      https://ncfcode.rc.fas.harvard.edu/api/v4/projects/134/trigger/pipeline
+    only:
+    - master@nrg/boldqc2
+    allow_failure: false
+    when: manual
+
+deploy_branch:
+    stage: deploy_branch
+    script:
+    - cp /tmp/singularity-bootstrap/boldqc2.img /users/nrgadmin/containers/boldqc2.img
+    - ssh ncflogin4.rc.fas.harvard.edu
+    - >
+      curl
+      --silent
+      --location
+      --output /dev/null
+      --write-out "%{http_code} %{url_effective}\n"
+      --request POST
+      --form token=f47b8061b4f4de57c3d0515009afc7
+      --form ref=master
+      --form "variables[CI_PROJECT_NAMESPACE]=$CI_PROJECT_NAMESPACE"
+      --form "variables[CI_PROJECT_NAME]=$CI_PROJECT_NAME"
+      --form "variables[CI_COMMIT_REF_NAME]=$CI_COMMIT_REF_NAME"
+      --form "variables[CI_COMMIT_TAG]=$CI_COMMIT_TAG"
+      https://ncfcode.rc.fas.harvard.edu/api/v4/projects/134/trigger/pipeline
+    except:
+    - master@nrg/boldqc2

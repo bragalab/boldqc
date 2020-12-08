@@ -1,0 +1,182 @@
+
+ReportFile        /users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/extended-qc/test_eyetracker_BOLD_10_EQC_auto_report.txt
+StartDate         2017-09-21
+InputFile         /users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/nifti/10/test_eyetracker_BOLD_10_EQC.nii.gz
+InputFileSize     3052605
+
+N_Vols 11
+
+Skip 4
+
+qc_N_Tps         7
+qc_thresh        150.0
+qc_nVox          95392
+qc_Mean_old      1810.88
+qc_Stdev_old     0.61
+qc_Mean          1810.884612 
+qc_Stdev         3.694319 
+qc_sSNR          3157.34
+qc_vSNR          556.249966 
+qc_slope         -0.184378 
+
+mot_N_Tps        7
+mot_rel_x_mean   2.85714e-07
+mot_rel_x_sd     4.51754e-07
+mot_rel_x_max    1e-06
+mot_rel_x_1mm    0
+mot_rel_x_5mm    0
+mot_rel_y_mean   0.00166657
+mot_rel_y_sd     0.00271666
+mot_rel_y_max    0.007071
+mot_rel_y_1mm    0
+mot_rel_y_5mm    0
+mot_rel_z_mean   0.0117227
+mot_rel_z_sd     0.00829263
+mot_rel_z_max    0.022082
+mot_rel_z_1mm    0
+mot_rel_z_5mm    0
+mot_rel_xyz_mean 0.0202033
+mot_rel_xyz_sd   0.0103475
+mot_rel_xyz_max  0.0431729
+mot_rel_xyz_1mm  0
+mot_rel_xyz_5mm  0
+rot_rel_x_mean   3.18571e-05
+rot_rel_x_sd     3.78585e-05
+rot_rel_x_max    8.4e-05
+rot_rel_y_mean   2.65714e-05
+rot_rel_y_sd     4.20131e-05
+rot_rel_y_max    9.3e-05
+rot_rel_z_mean   3.94286e-05
+rot_rel_z_sd     6.2342e-05
+rot_rel_z_max    0.000138
+mot_abs_x_mean   1.42857e-07
+mot_abs_x_sd     3.49927e-07
+mot_abs_x_max    1e-06
+mot_abs_y_mean   0.00166657
+mot_abs_y_sd     0.00271666
+mot_abs_y_max    0.007071
+mot_abs_z_mean   0.0318884
+mot_abs_z_sd     0.0126239
+mot_abs_z_max    0.047896
+mot_abs_xyz_mean 0.0336413
+mot_abs_xyz_sd   0.0170607
+mot_abs_xyz_max  0.064561
+rot_abs_x_mean   1.98571e-05
+rot_abs_x_sd     3.23394e-05
+rot_abs_x_max    8.4e-05
+rot_abs_y_mean   1.32857e-05
+rot_abs_y_sd     3.25432e-05
+rot_abs_y_max    9.3e-05
+rot_abs_z_mean   1.97143e-05
+rot_abs_z_sd     4.82899e-05
+rot_abs_z_max    0.000138
+
+Command           /sw/apps/boldqc2/libexec/stackcheck_ext.sh -p -M -T -X -f /users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/nifti/10/test_eyetracker_BOLD_10_EQC.nii.gz -o /users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/extended-qc -s 4 -N 10 -t 150.0 -S CBSCentral_S02107_MR_1 -P scantest
+CWD               /users/hhoke/eqc2_parameters
+StartTime         16:26:58
+Username          hhoke
+OS                Linux camd14.rc.fas.harvard.edu 2.6.32-642.6.2.el6.x86_64 #1 SMP Wed Oct 26 06:52:09 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+Hostname          camd14.rc.fas.harvard.edu
+Program.Version   1.0
+Program.Name      stackcheck_ext.sh
+Program.Path      /sw/apps/boldqc2/libexec/stackcheck_ext.sh
+Program.SHA256Sum ff6e271517f98fca2308064a2495387ce142d3808d2cc5d6a2e23c65ca9e1d1c
+Program.Size      26032
+Program.MTime     2017-09-18T14:17:16
+Program.Arguments <argument>-p</argument><argument>-M</argument><argument>-T</argument><argument>-X</argument><argument>-f</argument><argument>/users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/nifti/10/test_eyetracker_BOLD_10_EQC.nii.gz</argument><argument>-o</argument><argument>/users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/extended-qc</argument><argument>-s</argument><argument>4</argument><argument>-N</argument><argument>10</argument><argument>-t</argument><argument>150.0</argument><argument>-S</argument><argument>CBSCentral_S02107_MR_1</argument><argument>-P</argument><argument>scantest</argument>
+RuntimeSeconds    8
+MRScan.Project    scantest
+MRScan.Id         10
+MRScan.SessionId  CBSCentral_S02107_MR_1
+
+
+ReportFile        /users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/extended-qc/test_eyetracker_BOLD_10_EQC_auto_report.txt
+StartDate         2017-09-21
+InputFile         /users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/nifti/10/test_eyetracker_BOLD_10_EQC.nii.gz
+InputFileSize     3052605
+
+N_Vols 11
+
+Skip 4
+
+qc_N_Tps         7
+qc_thresh        150.0
+qc_nVox          95392
+qc_Mean_old      1810.88
+qc_Stdev_old     0.61
+qc_Mean          1810.884612 
+qc_Stdev         3.694319 
+qc_sSNR          3157.34
+qc_vSNR          556.249966 
+qc_slope         -0.184378 
+
+mot_N_Tps        7
+mot_rel_x_mean   2.85714e-07
+mot_rel_x_sd     4.51754e-07
+mot_rel_x_max    1e-06
+mot_rel_x_1mm    0
+mot_rel_x_5mm    0
+mot_rel_y_mean   0.00166657
+mot_rel_y_sd     0.00271666
+mot_rel_y_max    0.007071
+mot_rel_y_1mm    0
+mot_rel_y_5mm    0
+mot_rel_z_mean   0.0117227
+mot_rel_z_sd     0.00829263
+mot_rel_z_max    0.022082
+mot_rel_z_1mm    0
+mot_rel_z_5mm    0
+mot_rel_xyz_mean 0.0202033
+mot_rel_xyz_sd   0.0103475
+mot_rel_xyz_max  0.0431729
+mot_rel_xyz_1mm  0
+mot_rel_xyz_5mm  0
+rot_rel_x_mean   3.18571e-05
+rot_rel_x_sd     3.78585e-05
+rot_rel_x_max    8.4e-05
+rot_rel_y_mean   2.65714e-05
+rot_rel_y_sd     4.20131e-05
+rot_rel_y_max    9.3e-05
+rot_rel_z_mean   3.94286e-05
+rot_rel_z_sd     6.2342e-05
+rot_rel_z_max    0.000138
+mot_abs_x_mean   1.42857e-07
+mot_abs_x_sd     3.49927e-07
+mot_abs_x_max    1e-06
+mot_abs_y_mean   0.00166657
+mot_abs_y_sd     0.00271666
+mot_abs_y_max    0.007071
+mot_abs_z_mean   0.0318884
+mot_abs_z_sd     0.0126239
+mot_abs_z_max    0.047896
+mot_abs_xyz_mean 0.0336413
+mot_abs_xyz_sd   0.0170607
+mot_abs_xyz_max  0.064561
+rot_abs_x_mean   1.98571e-05
+rot_abs_x_sd     3.23394e-05
+rot_abs_x_max    8.4e-05
+rot_abs_y_mean   1.32857e-05
+rot_abs_y_sd     3.25432e-05
+rot_abs_y_max    9.3e-05
+rot_abs_z_mean   1.97143e-05
+rot_abs_z_sd     4.82899e-05
+rot_abs_z_max    0.000138
+
+Command           /sw/apps/boldqc2/libexec/stackcheck_ext.sh -p -M -T -X -f /users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/nifti/10/test_eyetracker_BOLD_10_EQC.nii.gz -o /users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/extended-qc -s 4 -N 10 -t 150.0 -S CBSCentral_S02107_MR_1 -P scantest
+CWD               /users/hhoke/eqc2_parameters
+StartTime         16:30:55
+Username          hhoke
+OS                Linux camd14.rc.fas.harvard.edu 2.6.32-642.6.2.el6.x86_64 #1 SMP Wed Oct 26 06:52:09 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+Hostname          camd14.rc.fas.harvard.edu
+Program.Version   1.0
+Program.Name      stackcheck_ext.sh
+Program.Path      /sw/apps/boldqc2/libexec/stackcheck_ext.sh
+Program.SHA256Sum ff6e271517f98fca2308064a2495387ce142d3808d2cc5d6a2e23c65ca9e1d1c
+Program.Size      26032
+Program.MTime     2017-09-18T14:17:16
+Program.Arguments <argument>-p</argument><argument>-M</argument><argument>-T</argument><argument>-X</argument><argument>-f</argument><argument>/users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/nifti/10/test_eyetracker_BOLD_10_EQC.nii.gz</argument><argument>-o</argument><argument>/users/hhoke/boldqc2-tests/testEmpty/scantest/test_eyetracker/10/extended-qc</argument><argument>-s</argument><argument>4</argument><argument>-N</argument><argument>10</argument><argument>-t</argument><argument>150.0</argument><argument>-S</argument><argument>CBSCentral_S02107_MR_1</argument><argument>-P</argument><argument>scantest</argument>
+RuntimeSeconds    7
+MRScan.Project    scantest
+MRScan.Id         10
+MRScan.SessionId  CBSCentral_S02107_MR_1
+

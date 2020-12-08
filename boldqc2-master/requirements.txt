@@ -1,0 +1,2 @@
+-e git+ssh://git@ncfcode.rc.fas.harvard.edu/nrg/pylib.git@master#egg=pylib
+-e .
