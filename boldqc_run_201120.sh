@@ -235,7 +235,7 @@ sh /projects/b1134/tools/slicer_imgs/slicer_boldqc.sh $TMPDIR/${filename}_skip_m
 
 module load R/3.6.0
 
-Rscript /projects/b1134/tools/boldqc_report/boldqc_report_20201120.R "$projectnm" "$SUB" "$SESS" "$task" "$acq" "$filename"
+Rscript /projects/b1134/tools/boldqc/boldqc_report/boldqc_report_run_20201120.R "$projectnm" "$SUB" "$SESS" "$task" "$acq" "$filename"
 rm $OUTPATH/Rplots.pdf
 
 rm -r $TMPDIR

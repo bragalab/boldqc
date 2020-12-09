@@ -59,9 +59,7 @@ fi
 
 done
 
-# Creat CSV for entire session
+# Collate QCs into sessions
 
-#sh /projects/b1134/boldqc/boldqc_session_201207.sh
-
-# Create PDF per session
+sh /projects/b1134/boldqc/boldqc_session_201207.sh
 
