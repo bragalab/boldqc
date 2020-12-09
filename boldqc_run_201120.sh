@@ -226,16 +226,9 @@ printf '%s\n %s\n %s\n %s\n %.2f, %.0f, %.1f, %s\n %.3f, %.3f, %.3f, %s\n %.1f, 
 cat $OUTPATH/${filename}_qcvals.csv
 
 # SLICER IMAGES
-#if [[ $acq = CBS2p4 ]]; then
-sh /projects/b1134/tools/slicer_imgs/slicer_boldqc_CBS2p4.sh $TMPDIR/${filename}_skip_mc_mean.nii.gz $OUTPATH ${filename}_skip_mc_mean
-sh /projects/b1134/tools/slicer_imgs/slicer_boldqc_CBS2p4.sh $TMPDIR/${filename}_skip_mc_std.nii.gz $OUTPATH ${filename}_skip_mc_std
-sh /projects/b1134/tools/slicer_imgs/slicer_boldqc_CBS2p4.sh $TMPDIR/${filename}_skip_mc_tsnr.nii.gz $OUTPATH ${filename}_skip_mc_tsnr
-#fi
-
-#if [[ $acq = CBS1p5 ]]; then
-#sh /projects/b1134/tools/slicer_imgs/slicer_boldqc_CBS1p5.sh $TMPDIR/${filename}_skip_mc_mean.nii.gz $OUTPATH ${filename}_skip_mc_mean
-#sh /projects/b1134/tools/slicer_imgs/slicer_boldqc_CBS1p5.sh $TMPDIR/${filename}_skip_mc_std.nii.gz $OUTPATH ${filename}_skip_mc_std
-#sh /projects/b1134/tools/slicer_imgs/slicer_boldqc_CBS1p5.sh $TMPDIR/${filename}_skip_mc_tsnr.nii.gz $OUTPATH ${filename}_skip_mc_tsnr
+sh /projects/b1134/tools/slicer_imgs/slicer_boldqc.sh $TMPDIR/${filename}_skip_mc_mean.nii.gz $OUTPATH ${filename}_skip_mc_mean
+sh /projects/b1134/tools/slicer_imgs/slicer_boldqc.sh $TMPDIR/${filename}_skip_mc_std.nii.gz $OUTPATH ${filename}_skip_mc_std
+sh /projects/b1134/tools/slicer_imgs/slicer_boldqc.sh $TMPDIR/${filename}_skip_mc_tsnr.nii.gz $OUTPATH ${filename}_skip_mc_tsnr
 #fi
 
 # GENERATE REPORT
