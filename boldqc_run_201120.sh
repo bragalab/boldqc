@@ -12,16 +12,18 @@
 
 # Usage:
 # boldqc_201120.sh file skip_trs
-# e.g. sh /projects/b1134/tools/boldqc/boldqc_201110.sh /projects/b1134/raw/bids/SeqDev/sub-fMRIPILOT1110/ses-fMRIPILOT1110/func/sub-fMRIPILOT1110_ses-fMRIPILOT1110_task-REST01_acq-CBS1p5_bold.nii.gz 4
+# e.g. sh /projects/b1134/tools/boldqc/boldqc_run_201110.sh /projects/b1134/raw/bids/SeqDev/sub-fMRIPILOT1110/ses-fMRIPILOT1110/func/sub-fMRIPILOT1110_ses-fMRIPILOT1110_task-REST01_acq-CBS1p5_bold.nii.gz 4
 
 SCAN=$1
 n=$2
 
 module load fsl
 
-#module load ImageMagick/7.0.4
+module load ImageMagick/7.0.4
 
-#module load ghostscript/9.19
+module load ghostscript/9.19
+
+module load jq
 
 filename=$(basename $SCAN '.nii.gz')
 
