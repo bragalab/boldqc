@@ -31,7 +31,7 @@ if (!require("RGraphics")) {install.packages(c("RGraphics")); require("RGraphics
 if (!require("cowplot")) {install.packages(c("cowplot")); require("cowplot")}  
 if (!require("stringi")) {install.packages(c("stringi")); require("stringi")}
 if (!require("png")) {install.packages(c("png")); require("png")}
-if (!require("EBImage")) {install.packages(c("EBImage")); require("EBImage")}
+#if (!require("EBImage")) {install.packages(c("EBImage")); require("EBImage")}
 if (!require("BiocManager")) {install.packages(c("BiocManager")); require ("BiocManager")}
 BiocManager::install(c("EBImage"))
 library(EBImage)
@@ -53,22 +53,22 @@ SESS <- args[3]
 wd_boldqc <-paste("/projects/b1134/processed/boldqc/", PROJ, "/sub-", SUB, "/ses-", SESS, sep = "")
 setwd(wd_boldqc)
 
-sessdatacsv <- paste("sub-", SUB, "_ses-", SESS, "_bold_qcvals.csv", sep = "")
+sessdatacsv <- paste("sub-", SUB, "_ses-", SESS, "_qcvals.csv", sep = "")
 sessdata <-read.csv(sessdatacsv)
-rundata$TR_s <- as.numeric(rundata$TR_s)
-rundata$TE_ms <- as.numeric(rundata$TE_ms)
-rundata$maxFD <- as.numeric(rundata$maxFD)
-rundata$meanFD <- as.numeric(rundata$meanFD)
-rundata$maxAbs <- as.numeric(rundata$maxAbs)
-rundata$v_tSNR <- as.numeric(rundata$v_tSNR)
-rundata$s_tSNR <- as.numeric(rundata$s_tSNR)
-rundata$TR_s <- format(round(rundata$TR_s, digits = 1), nsmall = 1)
-rundata$TE_ms <- format(round(rundata$TE_ms, digits = 1), nsmall = 1)
-rundata$maxFD <- format(round(rundata$maxFD, digits = 3), nsmall = 3)
-rundata$meanFD <- format(round(rundata$meanFD, digits = 3), nsmall = 3)
-rundata$maxAbs <- format(round(rundata$maxAbs, digits = 3), nsmall = 3)
-rundata$v_tSNR <- format(round(rundata$v_tSNR, digits = 1), nsmall = 1)
-rundata$s_tSNR <- format(round(rundata$s_tSNR, digits = 1), nsmall = 1)
+sessdata$TR_s <- as.numeric(sessdata$TR_s)
+sessdata$TE_ms <- as.numeric(sessdata$TE_ms)
+sessdata$maxFD <- as.numeric(sessdata$maxFD)
+sessdata$meanFD <- as.numeric(sessdata$meanFD)
+sessdata$maxAbs <- as.numeric(sessdata$maxAbs)
+sessdata$v_tSNR <- as.numeric(sessdata$v_tSNR)
+sessdata$s_tSNR <- as.numeric(sessdata$s_tSNR)
+sessdata$TR_s <- format(round(sessdata$TR_s, digits = 1), nsmall = 1)
+sessdata$TE_ms <- format(round(sessdata$TE_ms, digits = 1), nsmall = 1)
+sessdata$maxFD <- format(round(sessdata$maxFD, digits = 3), nsmall = 3)
+sessdata$meanFD <- format(round(sessdata$meanFD, digits = 3), nsmall = 3)
+sessdata$maxAbs <- format(round(sessdata$maxAbs, digits = 3), nsmall = 3)
+sessdata$v_tSNR <- format(round(sessdata$v_tSNR, digits = 1), nsmall = 1)
+sessdata$s_tSNR <- format(round(sessdata$s_tSNR, digits = 1), nsmall = 1)
 
 
 # CREATE QC GRAPHS
