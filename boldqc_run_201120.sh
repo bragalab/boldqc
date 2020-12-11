@@ -235,6 +235,8 @@ sh /projects/b1134/tools/slicer_imgs/slicer_boldqc.sh $TMPDIR/${filename}_skip_m
 
 # GENERATE REPORT
 
+module load fftw/3.3.3-gcc
+
 module load R/3.6.0
 
 Rscript /projects/b1134/tools/boldqc/boldqc_report/boldqc_report_run_20201120.R "$projectnm" "$SUB" "$SESS" "$task" "$acq" "$filename"

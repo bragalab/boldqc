@@ -12,7 +12,7 @@
 
 message("Loading required R packages")
 if(!require(grDevices)) {install.packages(c("grDevices")); require(grDevices)}
-#if(!require(car)) {install.packages(c("car")); require(car)}
+if(!require("fftwtools")) {install.packages(c("fftwtools")); require("fftwtools")}
 if (!require(plyr)) {install.packages(c("plyr")); require(plyr)}
 if (!require(lmPerm)) {install.packages(c("lmPerm")); require(lmPerm)}    
 if (!require("coin")) {install.packages(c("coin")); require("coin")}  

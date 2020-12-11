@@ -6,13 +6,12 @@
 
 # USE WITH R/3.6.0 FOR ALL PACKAGES TO WORK #
 
-### SET UP ###
+### SET UP ### 
 
 # LOAD REQUIRED PACKAGES #
 
 message("Loading required R packages")
 if(!require(grDevices)) {install.packages(c("grDevices")); require(grDevices)}
-#if(!require(car)) {install.packages(c("car")); require(car)}
 if (!require(plyr)) {install.packages(c("plyr")); require(plyr)}
 if (!require(lmPerm)) {install.packages(c("lmPerm")); require(lmPerm)}    
 if (!require("coin")) {install.packages(c("coin")); require("coin")}  
@@ -31,10 +30,6 @@ if (!require("RGraphics")) {install.packages(c("RGraphics")); require("RGraphics
 if (!require("cowplot")) {install.packages(c("cowplot")); require("cowplot")}  
 if (!require("stringi")) {install.packages(c("stringi")); require("stringi")}
 if (!require("png")) {install.packages(c("png")); require("png")}
-#if (!require("EBImage")) {install.packages(c("EBImage")); require("EBImage")}
-if (!require("BiocManager")) {install.packages(c("BiocManager")); require ("BiocManager")}
-BiocManager::install(c("EBImage"))
-library(EBImage)
 
 message("Generating session QC report")
 # SET UP VARIABLES #
@@ -62,6 +57,28 @@ sessdata$meanFD <- as.numeric(sessdata$meanFD)
 sessdata$maxAbs <- as.numeric(sessdata$maxAbs)
 sessdata$v_tSNR <- as.numeric(sessdata$v_tSNR)
 sessdata$s_tSNR <- as.numeric(sessdata$s_tSNR)
+
+# CREATE QC GRAPHS
+
+gMAX <- ggplot(sessdata, aes(Task, maxFD)) + geom_col(fill = "blue", color = "blue") +
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
+  ggtitle("Max FD") + labs(y = "mm") + scale_y_continuous(limits = c(0,1), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 0.6, color = "red", linetype = "dashed") +
+  theme(plot.title = element_text(hjust = 0.5))
+gMEAN <- ggplot(sessdata, aes(Task, meanFD)) + geom_col(fill = "blue", color = "blue") +
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
+  ggtitle("Mean FD") + labs(y = "mm") + scale_y_continuous(limits = c(0,1), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 0.15, color = "red", linetype = "dashed") +
+  theme(plot.title = element_text(hjust = 0.5))
+gABS <- ggplot(sessdata, aes(Task, maxAbs)) + geom_col(fill = "blue", color = "blue") +
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
+  ggtitle("Max Motion") + labs(y = "mm") + scale_y_continuous(limits = c(0,2), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 2.0, color = "red", linetype = "dashed") +
+  theme(plot.title = element_text(hjust = 0.5))
+gvtSNR <- ggplot(sessdata, aes(Task, v_tSNR)) + geom_col(fill = "blue", color = "blue") +
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
+  ggtitle("Voxel tSNR") + labs(y = "") + scale_y_continuous(limits = c(0,100), expand = c(0,0), labels = scales::number_format(accuracy = 0.1)) + geom_hline(yintercept = 20, color = "red", linetype = "dashed") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# ROUND NUMBERS PROPERLY FOR TABLE
+
 sessdata$TR_s <- format(round(sessdata$TR_s, digits = 1), nsmall = 1)
 sessdata$TE_ms <- format(round(sessdata$TE_ms, digits = 1), nsmall = 1)
 sessdata$maxFD <- format(round(sessdata$maxFD, digits = 3), nsmall = 3)
@@ -70,81 +87,11 @@ sessdata$maxAbs <- format(round(sessdata$maxAbs, digits = 3), nsmall = 3)
 sessdata$v_tSNR <- format(round(sessdata$v_tSNR, digits = 1), nsmall = 1)
 sessdata$s_tSNR <- format(round(sessdata$s_tSNR, digits = 1), nsmall = 1)
 
-
-# CREATE QC GRAPHS
-
-max <- sessdata[, "maxFD"]
-barplot(max, 
-        main="Max FD",
-        cex.main=1.5, 
-        ylab="mm",
-        ylim=c(0, 1),
-        cex.lab=1.5, 
-        col=rgb(0.2,0.4,0.6,0.6), 
-        border="#FFFFFF"
-)
-abline(h=0.6, col = "Red", lwd=2.5)
-
-mean <- sessdata[, "meanFD"]
-barplot(mean, 
-        main="Mean FD",
-        cex.main=1.5,   
-        ylab="mm", 
-        ylim=c(0, 1),
-        cex.lab=1.5, 
-        width=c(100,100), 
-        col=rgb(0.2,0.4,0.6,0.6), 
-        border="#FFFFFF"
-)
-abline(h=0.15, col = "Red", lwd=2)
-
-motion <- sessdata[, "maxAbs"]
-barplot(motion, 
-        main="Max Absolute Motion",
-        cex.main=1.5,   
-        ylab="mm", 
-        ylim=c(0, 2),
-        cex.lab=1.5, 
-        width=c(100,100), 
-        col=rgb(0.2,0.4,0.6,0.6), 
-        border="#FFFFFF"
-)
-abline(h=2.00, col = "Red", lwd=2)
-
-thresh <- sessdata[, "FD_0.2"]
-barplot(thresh, 
-        main="FD > 0.2",
-        cex.main=1.5,  
-        ylab="#", 
-        ylim=c(0, 120),
-        cex.lab=1.5, 
-        width=c(100,100), 
-        col=rgb(0.2,0.4,0.6,0.6), 
-        border="#FFFFFF"
-)
-abline(h=100, col = "Red", lwd=2)
-
-thresh <- sessdata[, "v_tSNR"]
-barplot(thresh, 
-        main="Voxel tSNR",
-        cex.main=1.5,  
-        ylab="#", 
-        ylim=c(0, 100),
-        cex.lab=1.5, 
-        width=c(100,100), 
-        col=rgb(0.2,0.4,0.6,0.6), 
-        border="#FFFFFF"
-)
-abline(h=20, col = "Red", lwd=2)
-
 # TURN DATA FRAMES INTO TABLE GROBS THAT CAN BE ARRANGED ON SINGLE PAGE
 
 tt2 <- ttheme_minimal(base_size = 9)
 
-#gPARAMS
-gTABLE <- tableGrob(rundata[1,1:16], rows = NULL, theme = tt2)
-
-#titlegPARAMS <-textGrob("Acquisition Parameters",gp=gpar(fontsize=12))
+gTABLE <- tableGrob(sessdata[,1:16], rows = NULL, theme = tt2)
 gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(fill=NA, lwd = 1)), t = 2, b = nrow(gTABLE), l = 1, r = ncol(gTABLE))
 #grid.draw(gTABLE)
 
@@ -158,10 +105,16 @@ gPROJ <- textGrob(paste(" ", headPROJ, "",  sep = '\n'), x = 0.05, just = "left"
 
 blank <- grid.rect(gp=gpar(fill="white", lwd = 0, col = "white"))
 
-pdf(paste(FILENAME, "_qcreport.pdf", sep = ""), height = 8.5, width = 11, onefile = T)
+pdf(paste("sub-", SUB, "_ses-", SESS, "_qcreport.pdf", sep = ""), height = 8.5, width = 11, onefile = T)
 
 QC.items <- grid.arrange(arrangeGrob(blank, ncol = 1),
-                         arrangeGrob(blank, arrangeGrob(gTITLE, gPROJ, ncol = 2, widths = c(0.5, 0.5)), gTABLE, blank, gGRAPHS, blank, ncol = 1, heights = c(0.6, 0.55, 3.5, 0.1, 3.5, 0.25)),
+                         arrangeGrob(blank, 
+                                     arrangeGrob(gTITLE, gPROJ, blank, ncol = 3, widths = c(0.25, 0.25, 0.5)), 
+                                     gTABLE, 
+                                     blank, 
+                                     arrangeGrob(gMAX, gMEAN, gABS, gvtSNR, ncol = 2, nrow = 2, widths = c(0.5, 0.5), heights = c(0.5, 0.5)), 
+                                     blank, 
+                                     ncol = 1, heights = c(0.6, 0.55, 2, 0.1, 5.0, 0.25)),
                          arrangeGrob(blank, ncol = 1),
                          nrow = 1, ncol = 3, widths = c(0.33, 10.34, 0.33))
 dev.off()

@@ -19,7 +19,9 @@ done
 
 #echo "Merging QC run PDFs for session $SESS into session PDF"
 
-#module load R/3.6.0
+module load fftw/3.3.3-gcc
+
+module load R/3.6.0
 
 #Rscript /projects/b1134/tools/boldqc/boldqc_report_run_20201120.R "$projectnm" "$SUB" "$SESS"
 #rm $OUTPATH/Rplots.pdf
