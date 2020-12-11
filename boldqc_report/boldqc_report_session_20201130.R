@@ -60,21 +60,21 @@ sessdata$s_tSNR <- as.numeric(sessdata$s_tSNR)
 
 # CREATE QC GRAPHS
 
-gMAX <- ggplot(sessdata, aes(Task, maxFD)) + geom_col(fill = "blue", color = "blue") +
+gMAX <- ggplot(sessdata, aes(Task, maxFD)) + geom_col(fill = "gray", color = "gray") +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
   ggtitle("Max FD") + labs(y = "mm") + scale_y_continuous(limits = c(0,1), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 0.6, color = "red", linetype = "dashed") +
   theme(plot.title = element_text(hjust = 0.5))
-gMEAN <- ggplot(sessdata, aes(Task, meanFD)) + geom_col(fill = "blue", color = "blue") +
+gMEAN <- ggplot(sessdata, aes(Task, meanFD)) + geom_col(fill = "gray", color = "gray") +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
   ggtitle("Mean FD") + labs(y = "mm") + scale_y_continuous(limits = c(0,1), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 0.15, color = "red", linetype = "dashed") +
   theme(plot.title = element_text(hjust = 0.5))
-gABS <- ggplot(sessdata, aes(Task, maxAbs)) + geom_col(fill = "blue", color = "blue") +
+gABS <- ggplot(sessdata, aes(Task, maxAbs)) + geom_col(fill = "gray", color = "gray") +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
-  ggtitle("Max Motion") + labs(y = "mm") + scale_y_continuous(limits = c(0,2), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 2.0, color = "red", linetype = "dashed") +
+  ggtitle("Max Absolute Motion") + labs(y = "mm") + scale_y_continuous(limits = c(0,3), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 2.0, color = "red", linetype = "dashed") +
   theme(plot.title = element_text(hjust = 0.5))
-gvtSNR <- ggplot(sessdata, aes(Task, v_tSNR)) + geom_col(fill = "blue", color = "blue") +
+gstSNR <- ggplot(sessdata, aes(Task, s_tSNR)) + geom_col(fill = "gray", color = "gray") +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
-  ggtitle("Voxel tSNR") + labs(y = "") + scale_y_continuous(limits = c(0,100), expand = c(0,0), labels = scales::number_format(accuracy = 0.1)) + geom_hline(yintercept = 20, color = "red", linetype = "dashed") +
+  ggtitle("Slice tSNR") + labs(y = "") + scale_y_continuous(limits = c(0,100), expand = c(0,0), labels = scales::number_format(accuracy = 0.1)) + geom_hline(yintercept = 20, color = "red", linetype = "dashed") +
   theme(plot.title = element_text(hjust = 0.5))
 
 # ROUND NUMBERS PROPERLY FOR TABLE
@@ -93,6 +93,7 @@ tt2 <- ttheme_minimal(base_size = 9)
 
 gTABLE <- tableGrob(sessdata[,1:16], rows = NULL, theme = tt2)
 gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(fill=NA, lwd = 1)), t = 2, b = nrow(gTABLE), l = 1, r = ncol(gTABLE))
+gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(fill=NA, lwd = 1)), t = 2, b = nrow(gTABLE), l = 9, r = 12)
 #grid.draw(gTABLE)
 
 # SET UP ADDITIONAL TEXT FOR PDF
@@ -100,7 +101,8 @@ headPROJ <- paste('Project: ', PROJ, sep = "")
 headSUB <- paste('Subject ID: ', SUB, sep = "")
 headSESS <- paste('Session ID: ', SESS, sep = "")
 gTITLE <- textGrob(paste("QC REPORT", headSUB, headSESS, "", sep = '\n'), x = 0.0, just = "left", gp=gpar(fontsize=10))
-gPROJ <- textGrob(paste(" ", headPROJ, "",  sep = '\n'), x = 0.05, just = "left", gp=gpar(fontsize=10))
+gPROJ <- textGrob(paste(" ", headPROJ, "", "",  sep = '\n'), x = 0.05, just = "left", gp=gpar(fontsize=10))
+
 ### MAKE PDF OF QC REPORT ###
 
 blank <- grid.rect(gp=gpar(fill="white", lwd = 0, col = "white"))
@@ -112,9 +114,9 @@ QC.items <- grid.arrange(arrangeGrob(blank, ncol = 1),
                                      arrangeGrob(gTITLE, gPROJ, blank, ncol = 3, widths = c(0.25, 0.25, 0.5)), 
                                      gTABLE, 
                                      blank, 
-                                     arrangeGrob(gMAX, gMEAN, gABS, gvtSNR, ncol = 2, nrow = 2, widths = c(0.5, 0.5), heights = c(0.5, 0.5)), 
+                                     arrangeGrob(gMAX, gMEAN, gABS, gstSNR, ncol = 2, nrow = 2, widths = c(0.5, 0.5), heights = c(0.5, 0.5)), 
                                      blank, 
                                      ncol = 1, heights = c(0.6, 0.55, 2, 0.1, 5.0, 0.25)),
                          arrangeGrob(blank, ncol = 1),
-                         nrow = 1, ncol = 3, widths = c(0.33, 10.34, 0.33))
+                         nrow = 1, ncol = 3, widths = c(0.85, 9.4, 0.85))
 dev.off()
