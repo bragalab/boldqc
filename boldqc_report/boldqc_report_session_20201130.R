@@ -118,5 +118,5 @@ QC.items <- grid.arrange(arrangeGrob(blank, ncol = 1),
                                      blank, 
                                      ncol = 1, heights = c(0.6, 0.55, 2, 0.1, 5.0, 0.25)),
                          arrangeGrob(blank, ncol = 1),
-                         nrow = 1, ncol = 3, widths = c(0.85, 9.4, 0.85))
+                         nrow = 1, ncol = 3, widths = c(0.70, 9.6, 0.70))
 dev.off()

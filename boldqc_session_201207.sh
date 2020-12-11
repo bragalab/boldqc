@@ -23,7 +23,7 @@ module load fftw/3.3.3-gcc
 
 module load R/3.6.0
 
-#Rscript /projects/b1134/tools/boldqc/boldqc_report_run_20201120.R "$projectnm" "$SUB" "$SESS"
-#rm $OUTPATH/Rplots.pdf
+Rscript /projects/b1134/tools/boldqc/boldqc_report/boldqc_report_session_20201130.R "$projectnm" "$SUB" "$SESS"
+rm $i/Rplots.pdf
 
 done
