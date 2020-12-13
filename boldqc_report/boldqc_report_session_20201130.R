@@ -62,19 +62,19 @@ sessdata$s_tSNR <- as.numeric(sessdata$s_tSNR)
 
 gMAX <- ggplot(sessdata, aes(Task, maxFD)) + geom_col(fill = "gray", color = "gray") +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
-  ggtitle("Max FD") + labs(y = "mm") + scale_y_continuous(limits = c(0,1), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 0.6, color = "red", linetype = "dashed") +
+  ggtitle("Max FD") + labs(y = "mm") + scale_y_continuous(limits = c(0,1), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 0.6, color = "black", linetype = "dashed") +
   theme(plot.title = element_text(hjust = 0.5))
 gMEAN <- ggplot(sessdata, aes(Task, meanFD)) + geom_col(fill = "gray", color = "gray") +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
-  ggtitle("Mean FD") + labs(y = "mm") + scale_y_continuous(limits = c(0,1), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 0.15, color = "red", linetype = "dashed") +
+  ggtitle("Mean FD") + labs(y = "mm") + scale_y_continuous(limits = c(0,1), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 0.15, color = "black", linetype = "dashed") +
   theme(plot.title = element_text(hjust = 0.5))
 gABS <- ggplot(sessdata, aes(Task, maxAbs)) + geom_col(fill = "gray", color = "gray") +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
-  ggtitle("Max Absolute Motion") + labs(y = "mm") + scale_y_continuous(limits = c(0,3), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 2.0, color = "red", linetype = "dashed") +
+  ggtitle("Max Absolute Motion") + labs(y = "mm") + scale_y_continuous(limits = c(0,3), expand = c(0,0), labels = scales::number_format(accuracy = 0.001)) + geom_hline(yintercept = 2.0, color = "black", linetype = "dashed") +
   theme(plot.title = element_text(hjust = 0.5))
 gstSNR <- ggplot(sessdata, aes(Task, s_tSNR)) + geom_col(fill = "gray", color = "gray") +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
-  ggtitle("Slice tSNR") + labs(y = "") + scale_y_continuous(limits = c(0,100), expand = c(0,0), labels = scales::number_format(accuracy = 0.1)) + geom_hline(yintercept = 20, color = "red", linetype = "dashed") +
+  ggtitle("Slice tSNR") + labs(y = "") + scale_y_continuous(limits = c(0,100), expand = c(0,0), labels = scales::number_format(accuracy = 0.1)) + geom_hline(yintercept = 20, color = "black", linetype = "dashed") +
   theme(plot.title = element_text(hjust = 0.5))
 
 # ROUND NUMBERS PROPERLY FOR TABLE
