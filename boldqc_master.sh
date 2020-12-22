@@ -36,7 +36,7 @@ echo "$projectnm $SUB $SESS $task"
 DATAPATH=$BIDSDIR/$projectnm/sub-$SUB/ses-$SESS/func
 OUTDIR=$QCDIR/$projectnm/sub-$SUB/ses-$SESS/task-$task
 
-outfile=${filename}_skip_mc_mean_sag.png
+outfile=${filename}_qcreport.pdf
 
 #Skip n vols based on TR
 tr=$(fslinfo $i | awk '{print $2}' | awk 'FNR == 10 {print}')
@@ -44,12 +44,12 @@ numskip=$(echo "( 12/$tr ) /1" | bc)
 
 if [ ! -s $OUTDIR/$outfile ]; then 
 
-#ls $DATAPATH/${filename}.nii.gz
-#ls $OUTDIR/$outfile
+ls $DATAPATH/${filename}.nii.gz
+ls $OUTDIR/$outfile
 
 cmd="sh /projects/b1134/tools/boldqc/$qcv $i $numskip"
 echo $cmd
-#$cmd
+$cmd
 
 else
 
@@ -61,5 +61,5 @@ done
 
 # Collate QCs into sessions
 
-sh /projects/b1134/boldqc/boldqc_session_201207.sh
+sh /projects/b1134/tools/boldqc/boldqc_session_201207.sh
 

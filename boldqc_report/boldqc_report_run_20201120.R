@@ -127,9 +127,10 @@ blank <- grid.rect(gp=gpar(fill="white", lwd = 0, col = "white"))
 pdf(paste(FILENAME, "_qcreport.pdf", sep = ""), height = 8.5, width = 11, onefile = T)
 
 QC.items <- grid.arrange(arrangeGrob(blank, ncol = 1),
-                         arrangeGrob(blank, arrangeGrob(gTITLE, gSLEEP, ncol = 2, widths = c(0.5, 0.5)), gPARAMS, gDERIVED, blank, gROT, gTRANS, gABSDISP, gRELDISP, blank, ncol = 1, heights = c(0.6, 0.6, 0.75, 0.75, 0.1, 1.35, 1.35, 1.35, 1.35, 0.25)),
+                         arrangeGrob(blank, arrangeGrob(gTITLE, gSLEEP, ncol = 2, widths = c(0.7, 0.3)), gPARAMS, gDERIVED, blank, gROT, gTRANS, gABSDISP, gRELDISP, blank, ncol = 1, heights = c(0.6, 0.6, 0.75, 0.75, 0.1, 1.35, 1.35, 1.35, 1.35, 0.25)),
+                         arrangeGrob(blank, ncol = 1),
                          arrangeGrob(blank, gMEAN, blank, gSTD, blank, gtSNR, blank, ncol = 1, heights = c(0.50, 2.5, 0.10, 2.5, 0.10, 2.5, 0.30)),
                          arrangeGrob(blank, ncol = 1),
-                         nrow = 1, heights=c(7), ncol = 4, widths = c(0.33, 5.17, 5.17, 0.33))
+                         nrow = 1, heights=c(7), ncol = 5, widths = c(0.5, 5.20, 0.30, 4.5, 0.5))
 dev.off()
 

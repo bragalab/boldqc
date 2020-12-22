@@ -50,6 +50,13 @@ setwd(wd_boldqc)
 
 sessdatacsv <- paste("sub-", SUB, "_ses-", SESS, "_qcvals.csv", sep = "")
 sessdata <-read.csv(sessdatacsv)
+
+
+# ADD IN BLANK ROWS FOR FORMATTING #
+while (nrow(sessdata) < 12) {
+  sessdata <- rbind(sessdata, c(" ", " ", " ", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+}
+
 sessdata$TR_s <- as.numeric(sessdata$TR_s)
 sessdata$TE_ms <- as.numeric(sessdata$TE_ms)
 sessdata$maxFD <- as.numeric(sessdata$maxFD)
@@ -74,7 +81,7 @@ gABS <- ggplot(sessdata, aes(Task, maxAbs)) + geom_col(fill = "gray", color = "g
   theme(plot.title = element_text(hjust = 0.5))
 gstSNR <- ggplot(sessdata, aes(Task, s_tSNR)) + geom_col(fill = "gray", color = "gray") +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
-  ggtitle("Slice tSNR") + labs(y = "") + scale_y_continuous(limits = c(0,100), expand = c(0,0), labels = scales::number_format(accuracy = 0.1)) + geom_hline(yintercept = 20, color = "black", linetype = "dashed") +
+  ggtitle("Slice tSNR") + labs(y = "") + scale_y_continuous(limits = c(0,100), expand = c(0,0), labels = scales::number_format(accuracy = 0.1)) +
   theme(plot.title = element_text(hjust = 0.5))
 
 # ROUND NUMBERS PROPERLY FOR TABLE
@@ -91,9 +98,10 @@ sessdata$s_tSNR <- format(round(sessdata$s_tSNR, digits = 1), nsmall = 1)
 
 tt2 <- ttheme_minimal(base_size = 9)
 
-gTABLE <- tableGrob(sessdata[,1:16], rows = NULL, theme = tt2)
+gTABLE <- tableGrob(sessdata[1:12,1:16], rows = NULL, theme = tt2)
 gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(fill=NA, lwd = 1)), t = 2, b = nrow(gTABLE), l = 1, r = ncol(gTABLE))
 gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(fill=NA, lwd = 1)), t = 2, b = nrow(gTABLE), l = 9, r = 12)
+
 #grid.draw(gTABLE)
 
 # SET UP ADDITIONAL TEXT FOR PDF
@@ -111,12 +119,12 @@ pdf(paste("sub-", SUB, "_ses-", SESS, "_qcreport.pdf", sep = ""), height = 8.5, 
 
 QC.items <- grid.arrange(arrangeGrob(blank, ncol = 1),
                          arrangeGrob(blank, 
-                                     arrangeGrob(gTITLE, gPROJ, blank, ncol = 3, widths = c(0.25, 0.25, 0.5)), 
+                                     arrangeGrob(gTITLE, gPROJ, blank, ncol = 3, widths = c(0.35, 0.15, 0.5)), 
                                      gTABLE, 
                                      blank, 
                                      arrangeGrob(gMAX, gMEAN, gABS, gstSNR, ncol = 2, nrow = 2, widths = c(0.5, 0.5), heights = c(0.5, 0.5)), 
                                      blank, 
-                                     ncol = 1, heights = c(0.6, 0.55, 2, 0.1, 5.0, 0.25)),
+                                     ncol = 1, heights = c(0.6, 0.55, 3.5, 0.1, 3.5, 0.25)),
                          arrangeGrob(blank, ncol = 1),
-                         nrow = 1, ncol = 3, widths = c(0.70, 9.6, 0.70))
+                         nrow = 1, ncol = 3, widths = c(0.57, 9.86, 0.57))
 dev.off()
