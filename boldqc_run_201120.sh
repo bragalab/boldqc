@@ -157,8 +157,14 @@ voxx=$(printf '%.1f' $voxx)
 voxy=$(fslinfo $DATAPATH/$filename | awk 'NR==8 {print $2}')
 voxy=$(printf '%.1f' $voxy)
 voxz=$(fslinfo $DATAPATH/$filename | awk 'NR==9 {print $2}')
-voxz=$(printf '%.1f' $voxz) 
+voxz=$(printf '%.1f' $voxz)
+
+if [[ $voxx == $voxy && $voxy == $voxz ]]; then
+voxsize="${voxx}_iso"
+else 
 voxsize=${voxx}x${voxy}x${voxz}
+fi 
+
 echo "   Voxel Dimensions = $voxsize"
 
 # Number of slices
