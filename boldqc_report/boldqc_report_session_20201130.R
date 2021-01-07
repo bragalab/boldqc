@@ -71,7 +71,6 @@ while (files != 0) {
     sessdata <- rbind(sessdata, c(NA, NA, NA, 0, 0, 0, 0, NA, 0, 0, 0, 0, 0, 0, 0, 0))
   }
   
-  #sessdata$Task <- as.character(sessdata$Task)
   sessdata$TR_s <- as.numeric(sessdata$TR_s)
   sessdata$TE_ms <- as.numeric(sessdata$TE_ms)
   sessdata$maxFD <- as.numeric(sessdata$maxFD)
@@ -96,7 +95,7 @@ while (files != 0) {
     theme(plot.title = element_text(hjust = 0.5))
   gstSNR <- ggplot(sessdata, aes(Task, s_tSNR)) + geom_col(fill = "gray", color = "gray", position = position_dodge2(width = NULL, preserve = "single", padding = 0.2, reverse = FALSE)) +
     theme(panel.border = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), panel.background = element_rect(fill = "white")) +
-    ggtitle("Slice tSNR") + labs(y = "") + scale_y_continuous(limits = c(0,100), expand = c(0,0), labels = scales::number_format(accuracy = 0.1)) +
+    ggtitle("Slice tSNR") + labs(y = "") + scale_y_continuous(limits = c(0,200), expand = c(0,0), labels = scales::number_format(accuracy = 0.1)) +
     theme(plot.title = element_text(hjust = 0.5))
   
   # ROUND NUMBERS PROPERLY FOR TABLE
@@ -114,6 +113,33 @@ while (files != 0) {
   tt2 <- ttheme_minimal(base_size = 9)
   
   gTABLE <- tableGrob(sessdata[1:12,1:16], rows = NULL, theme = tt2)
+  
+  # HIDE ANY ME CELLS THAT ARE REDUNDANT
+  
+  runtypes <- count(sessdata$Task)
+
+  for (row in 1:nrow(runtypes)) {
+    run <- as.character(runtypes[row, "x"])
+    num <- runtypes[row, "freq"]
+    
+    if (num > 1 & !is.na(run)) {
+      duplicateRows <- head(which(sessdata$Task == run))
+      tECHOS <- duplicateRows[1] + 2 # index includes header, want to keep first row
+      bECHOS <- tECHOS + num - 2 # we are hiding n-1 of the n echoes
+      gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(col="white", fill="white")), t = tECHOS, b = bECHOS, l = 1, r = 6) # Hide Task through Vols
+      gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(col="white", fill="white")), t = tECHOS, b = bECHOS, l = 8, r = 8) # Hide Acc
+    }
+  } 
+  
+  # HIDE NA ROWS THAT SERVE AS PLACEHOLDERS (IF ANY); ADD BORDERS
+  
+  whiteoutNA <- which(apply(sessdata, 1, function(r) any(r %in% c(NA))))
+  print(whiteoutNA)
+  
+  if (length(whiteoutNA) > 0) {
+    tNA <- whiteoutNA[1] + 1
+    gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(col="white", fill="white")), t = tNA, b = nrow(gTABLE), l = 1, r = ncol(gTABLE))
+  }
   gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(fill=NA, lwd = 1)), t = 2, b = nrow(gTABLE), l = 1, r = ncol(gTABLE))
   gTABLE <- gtable_add_grob(gTABLE, grobs=rectGrob(gp=gpar(fill=NA, lwd = 1)), t = 2, b = nrow(gTABLE), l = 9, r = 12)
   

@@ -76,9 +76,11 @@ rundata$s_tSNR <- format(round(rundata$s_tSNR, digits = 1), nsmall = 1)
 # READ IN SLICERS #
 meanSLICER <- paste(FILENAME, "_skip_mc_mean_sag.png", sep = "")
 meanSLICERimg <- readImage(meanSLICER)
+colorMode(meanSLICERimg) = Grayscale
 gMEAN <- rasterGrob(meanSLICERimg)
 stdSLICER <- paste(FILENAME, "_skip_mc_std_sag.png", sep = "")
 stdSLICERimg <- readImage(stdSLICER)
+colorMode(stdSLICERimg) = Grayscale
 gSTD <- rasterGrob(stdSLICERimg)
 tsnrSLICER <- paste(FILENAME, "_skip_mc_tsnr_sag.png", sep = "")
 tsnrSLICERimg <- readImage(tsnrSLICER)

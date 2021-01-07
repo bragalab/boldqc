@@ -3,15 +3,15 @@
 #SBATCH --partition=buyin      		# 'Buyin' submits to our node qhimem0018
 #SBATCH --time=00:20:00             	# Walltime/duration of the job
 #SBATCH --mem=40GB               	# Memory per node in GB. Also see --mem-per-cpu
-#SBATCH --output=/projects/b1134/processed/boldqc/logs/boldqc_%a_%A.out
-#SBATCH --error=/projects/b1134/processed/boldqc/logs/boldqc_%a_%A.err
-#SBATCH --job-name="boldqc"       	# Name of job
+#SBATCH --output=/projects/b1134/processed/boldqc/logs/boldqc_ME_%a_%A.out
+#SBATCH --error=/projects/b1134/processed/boldqc/logs/boldqc_ME_%a_%A.err
+#SBATCH --job-name="boldqc_ME"       	# Name of job
 
-# Braga Lab BOLD QC Pipeline
-# Created by R. Braga & A. Holubecki on November 2020
+# Braga Lab BOLD ME QC Pipeline
+# Created by A. Holubecki on December 29th, 2020
 
 # Usage:
-# boldqc_201120.sh file skip_trs
+# boldqc_ME_201229.sh file skip_trs
 # e.g. sh /projects/b1134/tools/boldqc/boldqc_run_201110.sh /projects/b1134/raw/bids/SeqDev/sub-fMRIPILOT1110/ses-fMRIPILOT1110/func/sub-fMRIPILOT1110_ses-fMRIPILOT1110_task-REST01_acq-CBS1p5_bold.nii.gz 4
 
 SCAN=$1
@@ -48,44 +48,7 @@ if [[ ! -e $SCAN ]]; then
 	#exit
 fi
 
-### SKIPPING FIRST n VOLUMES
-totpts=$(fslinfo $SCAN | awk '{print $2}' | awk 'FNR == 5 {print}')
-echo "Number of volumes: $totpts" #make sure this is equal to the number of frames in the scan
-numpts=$(($totpts-$n))
 
-echo "Skipping first $n volumes"
-fslroi $SCAN $TMPDIR/${filename}_skip $n $numpts
-#cp $SCAN $TMPDIR/${filename}_skip.nii.gz #need to do this and comment out above command for very short phantoms.
-
-### PERFORMING MOTION CORRECTION
-echo 'Performing motion correction'
-mcflirt -in $TMPDIR/${filename}_skip -out $TMPDIR/${filename}_skip_mc -refvol 0 -plots -rmsrel -rmsabs
-
-# CREATING MOTION PLOTS
-echo 'Creating motion plots'
-rot="0.020"
-ymin_rot=$(bc<<<"0-$rot")
-ymax_rot=$(bc<<<"0+$rot")
-
-fsl_tsplot -i $TMPDIR/${filename}_skip_mc.par -t 'MCFLIRT estimated rotations (radians)' -u 1 --start=1 --finish=3 --ymin=$ymin_rot --ymax=$ymax_rot -w 651 -h 144 -o $TMPDIR/${filename}_skip_mc_rot.png
-
-convert $TMPDIR/${filename}_skip_mc_rot.png -crop 653x166+25+0 $OUTPATH/${filename}_skip_mc_rot.png
-
-trans="1.000"
-ymin_trans=$(bc<<<"0-$trans")
-ymax_trans=$(bc<<<"0+$trans")
-
-fsl_tsplot -i $TMPDIR/${filename}_skip_mc.par -t 'MCFLIRT estimated translations (mm)' -u 1 --start=4 --finish=6 --ymin=$ymin_trans --ymax=$ymax_trans -w 640 -h 144 -o $TMPDIR/${filename}_skip_mc_trans.png
-
-convert $TMPDIR/${filename}_skip_mc_trans.png -crop 653x167+14+0 $OUTPATH/${filename}_skip_mc_trans.png
-
-fsl_tsplot -i $TMPDIR/${filename}_skip_mc_abs.rms, -t 'MCFLIRT estimated absolute mean displacement (mm)' -u 1 --ymin=0 --ymax=2 -w 635 -h 144 -o $TMPDIR/${filename}_skip_mc_disp_abs.png
-
-convert $TMPDIR/${filename}_skip_mc_disp_abs.png -crop 653x167+10+0 $OUTPATH/${filename}_skip_mc_disp_abs.png
-
-fsl_tsplot -i $TMPDIR/${filename}_skip_mc_rel.rms -t 'MCFLIRT estimated relative mean displacement (mm)' -u 1 --ymin=0 --ymax=1 -w 646 -h 144 -o $TMPDIR/${filename}_skip_mc_disp_rel.png
-
-convert $TMPDIR/${filename}_skip_mc_disp_rel.png -crop 653x167+20+0 $OUTPATH/${filename}_skip_mc_disp_rel.png
 
 ### MEAN, STD, TSNR
 echo 'Calculating mean and std image'
@@ -236,17 +199,6 @@ sh /projects/b1134/tools/slicer_imgs/slicer_boldqc.sh $TMPDIR/${filename}_skip_m
 sh /projects/b1134/tools/slicer_imgs/slicer_boldqc.sh $TMPDIR/${filename}_skip_mc_tsnr.nii.gz $OUTPATH ${filename}_skip_mc_tsnr
 #fi
 
-# GENERATE REPORT
-
-module load fftw/3.3.3-gcc
-
-module load R/3.6.0
-
-Rscript /projects/b1134/tools/boldqc/boldqc_report/boldqc_report_run_20201120.R "$projectnm" "$SUB" "$SESS" "$task" "$acq" "$filename"
-rm $OUTPATH/Rplots.pdf
-
-if [[ $filename != *echo-* ]] ; then
-rm -r $TMPDIR # we want to keep temporary files for ME data to get average values
-fi
+rm -r $TMPDIR
 
 ### END QC
