@@ -1,4 +1,20 @@
-# Creat CSV for entire session
+#!/bin/bash
+#SBATCH --account=b1134                	# Our account/allocation
+#SBATCH --partition=buyin      		# 'Buyin' submits to our node qhimem0018
+#SBATCH --time=00:20:00             	# Walltime/duration of the job
+#SBATCH --mem=40GB               	# Memory per node in GB. Also see --mem-per-cpu
+#SBATCH --output=/projects/b1134/processed/boldqc/logs/boldqc_session_%a_%A.out
+#SBATCH --error=/projects/b1134/processed/boldqc/logs/boldqc_session_%a_%A.err
+#SBATCH --job-name="boldqc_session"       	# Name of job
+
+# Braga Lab BOLD QC Session Pipeline
+# Created by A. Holubecki on December 2020
+
+# Usage:
+# boldqc_session_201207.sh
+# e.g. sh /projects/b1134/tools/boldqc/boldqc_session_201207.sh 
+
+# Create CSV for entire session
 
 QCDIR=/projects/b1134/processed/boldqc
 

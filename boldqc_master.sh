@@ -1,8 +1,18 @@
+#!/bin/bash
+#SBATCH --account=b1134                	# Our account/allocation
+#SBATCH --partition=buyin      		# 'Buyin' submits to our node qhimem0018
+#SBATCH --time=04:00:00             	# Walltime/duration of the job (6 hours for 16 tasks)
+#SBATCH --mem=40GB               	# Memory per node in GB. Also see --mem-per-cpu
+#SBATCH --output=/projects/b1134/processed/boldqc/logs/boldqc_master_%a_%A.out
+#SBATCH --error=/projects/b1134/processed/boldqc/logs/boldqc_master_%a_%A.err
+#SBATCH --job-name="boldqc_master"       	# Name of job
+
+# Braga Lab BOLD QC Master Pipeline
+# Created by R. Braga on November 2020
 
 # Usage:
 # sh /projects/b1134/tools/boldqc/boldqc_master.sh
-
-# Run boldqc for all bold runs in raw/bids directory - by R. Braga 11/2020
+# Run boldqc for all bold runs in raw/bids directory
 
 qcv=boldqc_run_201120.sh
 
@@ -38,18 +48,20 @@ OUTDIR=$QCDIR/$projectnm/sub-$SUB/ses-$SESS/task-$task
 
 outfile=${filename}_qcreport.pdf
 
-#Skip n vols based on TR
+if [ ! -s $OUTDIR/$outfile ]; then 
+
+#Skip n vols based on TR (12 seconds)
 tr=$(fslinfo $i | awk '{print $2}' | awk 'FNR == 10 {print}')
 numskip=$(echo "( 12/$tr ) /1" | bc) 
 
-if [ ! -s $OUTDIR/$outfile ]; then 
 
 ls $DATAPATH/${filename}.nii.gz
 ls $OUTDIR/$outfile
 
-cmd="sh /projects/b1134/tools/boldqc/$qcv $i $numskip"
+cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
 echo $cmd
-$cmd
+
+jid=$($cmd | cut -d ' ' -f4)
 
 else
 
@@ -61,5 +73,5 @@ done
 
 # Collate QCs into sessions
 
-sh /projects/b1134/tools/boldqc/boldqc_session_201207.sh
+sbatch --dependency=afterok:${jid} /projects/b1134/tools/boldqc/boldqc_session_201207.sh
 

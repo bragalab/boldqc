@@ -3,15 +3,15 @@
 #SBATCH --partition=buyin      		# 'Buyin' submits to our node qhimem0018
 #SBATCH --time=00:20:00             	# Walltime/duration of the job
 #SBATCH --mem=40GB               	# Memory per node in GB. Also see --mem-per-cpu
-#SBATCH --output=/projects/b1134/processed/boldqc/logs/boldqc_%a_%A.out
-#SBATCH --error=/projects/b1134/processed/boldqc/logs/boldqc_%a_%A.err
-#SBATCH --job-name="boldqc"       	# Name of job
+#SBATCH --output=/projects/b1134/processed/boldqc/logs/boldqc_run_%a_%A.out
+#SBATCH --error=/projects/b1134/processed/boldqc/logs/boldqc_run_%a_%A.err
+#SBATCH --job-name="boldqc_run"       	# Name of job
 
-# Braga Lab BOLD QC Pipeline
+# Braga Lab BOLD QC Run Pipeline
 # Created by R. Braga & A. Holubecki on November 2020
 
 # Usage:
-# boldqc_201120.sh file skip_trs
+# boldqc_run_201120.sh file skip_trs
 # e.g. sh /projects/b1134/tools/boldqc/boldqc_run_201110.sh /projects/b1134/raw/bids/SeqDev/sub-fMRIPILOT1110/ses-fMRIPILOT1110/func/sub-fMRIPILOT1110_ses-fMRIPILOT1110_task-REST01_acq-CBS1p5_bold.nii.gz 4
 
 SCAN=$1
