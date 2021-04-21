@@ -31,7 +31,7 @@ echo "-----"; echo "Will save QC output to: $QCDIR"; echo "-----"
 echo "Project  -  Subject  -  Session  -  Task"
 
 
-for i in `ls $BIDSDIR/*/sub-*/ses-*/func/*_bold.nii.gz`
+for i in `ls $BIDSDIR/*/sub-*/ses-*/func/*_bold.nii.gz 2> /dev/null`
 do
 #echo "Running QC for file: $i"
 filename=$(basename $i '.nii.gz')
