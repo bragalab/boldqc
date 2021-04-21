@@ -14,7 +14,7 @@
 # sh /projects/b1134/tools/boldqc/boldqc_master.sh
 # Run boldqc for all bold runs in raw/bids directory
 
-qcv=boldqc_run_201120.sh
+qcv=boldqc_run_210421.sh
 
 BIDSDIR=/projects/b1134/raw/bids
 
