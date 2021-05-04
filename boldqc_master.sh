@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=b1134                	# Our account/allocation
 #SBATCH --partition=buyin      		# 'Buyin' submits to our node qhimem0018
-#SBATCH --time=04:00:00             	# Walltime/duration of the job (6 hours for 16 tasks)
+#SBATCH --time=01:00:00             	# Walltime/duration of the job (6 hours for 16 tasks)
 #SBATCH --mem=40GB               	# Memory per node in GB. Also see --mem-per-cpu
 #SBATCH --output=/projects/b1134/processed/boldqc/logs/boldqc_master_%a_%A.out
 #SBATCH --error=/projects/b1134/processed/boldqc/logs/boldqc_master_%a_%A.err
@@ -58,7 +58,8 @@ numskip=$(echo "( 12/$tr ) /1" | bc)
 ls $DATAPATH/${filename}.nii.gz
 ls $OUTDIR/$outfile
 
-cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
+#cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
+cmd="sh /projects/b1134/tools/boldqc/$qcv $i $numskip"
 echo $cmd
 
 jid=$($cmd | cut -d ' ' -f4)
@@ -73,5 +74,6 @@ done
 
 # Collate QCs into sessions
 
-sbatch --dependency=afterok:${jid} /projects/b1134/tools/boldqc/boldqc_session_201207.sh
+#sbatch --dependency=afterok:${jid} /projects/b1134/tools/boldqc/boldqc_session_201207.sh
+sh /projects/b1134/tools/boldqc/boldqc_session_201207.sh
 
