@@ -40,7 +40,7 @@ projectnm=$(echo $i | cut -d'/' -f6)
 SUB=$(echo $filename | awk -F 'sub-' '{print $2}' | cut -d'_' -f1)
 SESS=$(echo $filename | awk -F 'ses-' '{print $2}' | cut -d'_' -f1)
 task=$(echo $filename | awk -F 'task-' '{print $2}' | cut -d'_' -f1)
-#acq=$(echo $filename | awk -F 'acq-' '{print $2}' | cut -d'_' -f1)
+acq=$(echo $filename | awk -F 'acq-' '{print $2}' | cut -d'_' -f1)
 
 echo "$projectnm $SUB $SESS $task"
 DATAPATH=$BIDSDIR/$projectnm/sub-$SUB/ses-$SESS/func
@@ -59,7 +59,7 @@ ls $DATAPATH/${filename}.nii.gz
 ls $OUTDIR/$outfile
 
 #cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
-cmd="sh /projects/b1134/tools/boldqc/$qcv $i $numskip"
+cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
 echo $cmd
 
 jid=$($cmd | cut -d ' ' -f4)
@@ -75,5 +75,7 @@ done
 # Collate QCs into sessions
 
 #sbatch --dependency=afterok:${jid} /projects/b1134/tools/boldqc/boldqc_session_201207.sh
-sh /projects/b1134/tools/boldqc/boldqc_session_201207.sh
+echo "Check status of jobs using sacct"
+echo "Once they are done, submit the following job:"
+echo "sh /projects/b1134/tools/boldqc/boldqc_session_201207.sh"
 
