@@ -52,7 +52,9 @@ if [ ! -s $OUTDIR/$outfile ]; then
 
 #Skip n vols based on TR (12 seconds)
 tr=$(fslinfo $i | awk '{print $2}' | awk 'FNR == 10 {print}')
-numskip=$(echo "( 12/$tr ) /1" | bc) 
+#numskip=$(echo "( 12/$tr ) /1" | bc)
+numskip=`printf %.0f $(echo "( 12/$tr ) /1" | bc -l)`
+#numskip=0 
 
 
 ls $DATAPATH/${filename}.nii.gz

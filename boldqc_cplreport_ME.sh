@@ -1,62 +1,73 @@
 #!/bin/bash
 
-#compile qc report csv for Multi-Echo data
-# ML 11/3/2021
+#Compile qc report csv for Multi-Echo data
+# Created by M. Lakshman on 11/3/2021 -- edited on 2/18/22
 # usage:
-# boldqc_cplreport_ME.sh subjectid
+# boldqc_cplreport_ME.sh $projectnm $SUB $SESS
 
-project=BNI
-sub=YKBYHS
-ses=2201193TAR00029
-SUBJDIR=/projects/b1134/processed/boldqc/$project/sub-$sub/ses-$ses
-cd $SUBJDIR
+#projectnm=$1
+#SUB=$2
+#SESS=$3
+#SUBJDIR=/projects/b1134/processed/boldqc/$projectnm/sub-$SUB/ses-$SESS
+#cd $SUBJDIR
 
-#set headers for final CSV file
-echo "Sub, Sess, Task, Time, Vox, Slices, TR_s, Vols, TE_ms, Acc, maxFD, meanFD, maxAbs, FD_0.2, meanBOLD, stdBOLD, vtSNR, stSNR" > compiled_qcval.csv
+QCDIR=/projects/b1134/processed/boldqc
+cd $QCDIR
 
-#read the second line of each Echo-1 CSV and export to new CSV
-for i in `ls $SUBJDIR/*/*_echo-1_bold_qcvals.csv`
+for a in $QCDIR/*/sub-*/*
 do
-	filename=$(basename $i '.csv')
-	SUB=$(echo $filename | awk -F 'sub-' '{print $2}' | cut -d'_' -f1)
-	SESS=$(echo $filename | awk -F 'ses-' '{print $2}' | cut -d'_' -f1)
-	echo $SUB, $SESS, $(awk '(NR>1)' $i) >> full_qcval.csv
+	echo $a
+
+	#set headers for compiled CSV file
+	echo "Sub, Sess, Task, maxAbs, maxFD, meanFD, FD_0.2, stSNR, vtSNR, Vox, TR_s, Vols, TE_ms, meanBOLD, stdBOLD" > $a/compiled.csv
+
+	#read the second line of each Echo-1 CSV and export to new CSV
+	for i in `ls $a/*/*_echo-1_bold_qcvals.csv`
+	do
+		filename=$(basename $i '.csv')
+		SUB=$(echo $filename | awk -F 'sub-' '{print $2}' | cut -d'_' -f1)
+		SESS=$(echo $filename | awk -F 'ses-' '{print $2}' | cut -d'_' -f1)
+		echo $SUB, $SESS, $(awk '(NR>1)' $i) >> $a/echo1_qcval.csv
+	done
+
+	#Extract first columns from Echo-1 CSV
+	awk -F "\"*,\"*" '{print $1,",",$2,",",$3,",",$4,",",$5,",",$7,",",$8,",",$9,",",$11,",",$12,",",$13,",",$14,",",$17,",",$18}' $a/echo1_qcval.csv >> $a/echo1_partial_qcval.csv
+
+	#Read the second line of each Echo-2 CSV and export to new CSV
+	for j in `ls $a/*/*_echo-2_bold_qcvals.csv`
+	do 
+		filename=$(basename $j '.csv')
+		SUB=$(echo $filename | awk -F 'sub-' '{print $2}' | cut -d'_' -f1)
+		SESS=$(echo $filename | awk -F 'ses-' '{print $2}' | cut -d'_' -f1)
+		echo $SUB, $SESS, $(awk '(NR>1)' $j) >> $a/echo2_qcval.csv
+	done
+
+	#Extract vtSNR and stSNR columns from Echo-2 CSV
+	awk -F "\"*,\"*" '{print $15,",",$16}' $a/echo2_qcval.csv >> $a/echo2_partial_qcval.csv
+
+	#Paste Echo2 CSV values next to Echo1 CSV
+	paste -d ',' $a/echo1_partial_qcval.csv $a/echo2_partial_qcval.csv >> $a/int_compiled_qcval.csv
+
+	#Reorder columns to look like the QC_MRI Excel Spreadsheets
+	awk -F, '{print $1,$2,$3,$11,$9,$10,$12,$16,$15,$5,$6,$7,$8,$13,$14}' OFS=, "$a/int_compiled_qcval.csv" >> $a/reorg_qcval.csv
+	echo $a
+
+	#migrate contents of reorg to the compiled spreadsheet with headers
+	sed '1 s/^/\n/' $a/reorg_qcval.csv >> $a/compiled.csv
+
+	#delete unnecessary spaces
+        sed -i " /^$/d" $a/compiled.csv
+
+	#create blank columns for free response on Excel
+	awk -F, '{$3=FS$3; $4=FS$4; $10=FS$10; $10=FS$10}1' OFS=, $a/compiled.csv >> $a/compiled_[$SESS]_qcval.csv
+
+	#Remove all intermediary CSVs
+	rm $a/compiled.csv
+	rm $a/echo1_qcval.csv
+	rm $a/echo1_partial_qcval.csv
+	rm $a/echo2_qcval.csv
+	rm $a/echo2_partial_qcval.csv
+	rm $a/int_compiled_qcval.csv
+	rm $a/reorg_qcval.csv
+
 done
-
-#Delete the vtSNR and stSNR columns from new CSV
-#Reformat CSV to columns
-#Delete blank spaces in CSV
-echo $(cut -d, -f15-16 --complement full_qcval.csv) > full_qcval.csv
-sed "s/$sub/\n&/g" full_qcval.csv >> compiled_qcval.csv
-sed -i ' /^$/d' compiled_qcval.csv
-
-#Read the second line of each Echo-2 CSV and export to new CSV
-for j in `ls $SUBJDIR/*/*_echo-2_bold_qcvals.csv`
-do 
-	filename=$(basename $j '.csv')
-	SUB=$(echo $filename | awk -F 'sub-' '{print $2}' | cut -d'_' -f1)
-	SESS=$(echo $filename | awk -F 'ses-' '{print $2}' | cut -d'_' -f1)
-	echo $SUB, $SESS, $(awk '(NR>1)' $j) >> echo2_qcval.csv
-done
-
-#Extract vtSNR and stSNR columns from Echo-2 CSV
-awk -F "\"*,\"*" '{print $15,",",$16}' echo2_qcval.csv >> echo2_1516_qcval.csv
-#get rid of unnecessary spaces
-sed -i.bak -E 's/(^|,)[[:blank:]]+/\1/g; s/[[:blank:]]+(,|$)/\1/g' echo2_1516_qcval.csv
-#blank line at the beginning of echo2 csv
-sed '1 i \
-' echo2_1516_qcval.csv >> echo2_final_qcval.csv
-
-#Merge compiled_qcval (Echo-1 data) and Echo-2 data
-paste -d, compiled_qcval.csv echo2_final_qcval.csv >> compiled_[$ses]_qcval.csv
-
-#Remove all intermediary CSVs
-rm full_qcval.csv
-rm echo2_qcval.csv
-rm echo2_1516_qcval.csv
-rm echo2_final_qcval.csv
-rm echo2_1516_qcval.csv.bak
-rm compiled_qcval.csv
-
-
-
