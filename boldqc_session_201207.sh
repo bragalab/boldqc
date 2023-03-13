@@ -43,3 +43,5 @@ Rscript /projects/b1134/tools/boldqc/boldqc_report/boldqc_report_session_2020113
 rm $i/Rplots.pdf
 
 done
+
+

@@ -237,7 +237,7 @@ sh /projects/b1134/tools/slicer_imgs/slicer_boldqc.sh $TMPDIR/${filename}_skip_m
 #fi
 
 # GENERATE REPORT
-
+ 
 module load fftw/3.3.3-gcc
 
 module load R/3.6.0

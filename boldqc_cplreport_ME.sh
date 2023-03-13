@@ -3,7 +3,7 @@
 #Compile qc report csv for Multi-Echo data
 # Created by M. Lakshman on 11/3/2021 -- edited on 2/18/22
 # usage:
-# boldqc_cplreport_ME.sh $projectnm $SUB $SESS
+# sh boldqc_cplreport_ME.sh
 
 #projectnm=$1
 #SUB=$2
@@ -16,6 +16,21 @@ cd $QCDIR
 
 for a in $QCDIR/*/sub-*/*
 do
+	echo $a/compiled_${SESS}_qcval.csv
+
+	for i in `ls $a/*/*_echo-1_bold_qcvals.csv`
+	do
+		filename=$(basename $i '.csv')
+		SESS=$(echo $filename | awk -F 'ses-' '{print $2}' | cut -d'_' -f1)
+	done
+
+echo $a/compiled_${SESS}_qcval.csv
+
+	if [ -f $a/compiled_${SESS}_qcval.csv ]; then 
+	echo "skipping"
+	continue
+	fi 
+
 	echo $a
 
 	#set headers for compiled CSV file
@@ -59,7 +74,7 @@ do
         sed -i " /^$/d" $a/compiled.csv
 
 	#create blank columns for free response on Excel
-	awk -F, '{$3=FS$3; $4=FS$4; $10=FS$10; $10=FS$10}1' OFS=, $a/compiled.csv >> $a/compiled_[$SESS]_qcval.csv
+	awk -F, '{$3=FS$3; $4=FS$4; $10=FS$10; $10=FS$10}1' OFS=, $a/compiled.csv >> $a/compiled_${SESS}_qcval.csv
 
 	#Remove all intermediary CSVs
 	rm $a/compiled.csv
@@ -71,3 +86,4 @@ do
 	rm $a/reorg_qcval.csv
 
 done
+ 

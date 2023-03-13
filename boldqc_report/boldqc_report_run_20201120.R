@@ -33,7 +33,7 @@ if (!require("stringi")) {install.packages(c("stringi")); require("stringi")}
 if (!require("png")) {install.packages(c("png")); require("png")}
 if (!require("BiocManager")) {install.packages(c("BiocManager")); require ("BiocManager")}
 #if (!require("EBImage")) {install.packages(c("EBImage")); require ("EBImage")}
-BiocManager::install(c("EBImage"))
+#BiocManager::install(c("EBImage"))
 library(EBImage)
 
 message("Generating run QC report")

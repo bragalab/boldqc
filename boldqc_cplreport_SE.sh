@@ -3,10 +3,10 @@
 #compile qc report csv
 # QY 10/2/2021
 # usage:
-# boldqc_cplreport.sh subjectid
+# boldqc_cplreport.sh projectid subjectid
 
-project=
-sub=
+project=$1
+sub=$2
 SUBJDIR=/projects/b1134/processed/boldqc/$project/sub-$sub/
 cd $SUBJDIR
 
