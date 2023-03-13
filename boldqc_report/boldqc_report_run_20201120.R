@@ -47,6 +47,8 @@ SUB <- args[2]
 SESS <- args[3]
 TASK <- args[4]
 ACQ <- args[5]
+FILENAME <-args[6]
+vols_match <- args[7]
 
 ### CREATE QC REPORT FOR RUN ###
 
@@ -55,7 +57,6 @@ ACQ <- args[5]
 wd_boldqc <-paste("/projects/b1134/processed/boldqc/", PROJ, "/sub-", SUB, "/ses-", SESS, "/", "task-", TASK, sep = "")
 setwd(wd_boldqc)
 
-FILENAME <-args[6]
 rundatacsv <- paste(FILENAME, "_qcvals.csv", sep = "")
 rundata <-read.csv(rundatacsv)
 rundata$TR_s <- as.numeric(rundata$TR_s)
@@ -110,6 +111,10 @@ gPARAMS <- tableGrob(rundata[1,1:8], rows = NULL, theme = tt2)
 #titlegPARAMS <-textGrob("Acquisition Parameters",gp=gpar(fontsize=12))
 gPARAMS <- gtable_add_grob(gPARAMS, grobs=rectGrob(gp=gpar(fill=NA, lwd = 1)), t = 2, b = nrow(gPARAMS), l = 1, r = ncol(gPARAMS))
 #grid.draw(gPARAMS)
+if (vols_match == "FALSE") {
+  # color the 'Vols' cell red
+  gPARAMS = gtable_add_grob(gPARAMS, grobs=rectGrob(gp=gpar(fill="#F58787", lwd = 0, col="white")), t = 2, b = nrow(gPARAMS), l = 6,r = 6,z=-Inf)
+}
 
 #gDERIVED
 gDERIVED <- tableGrob(rundata[1,9:16], rows = NULL, theme = tt2)

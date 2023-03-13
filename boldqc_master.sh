@@ -48,6 +48,41 @@ do
 	DATAPATH=$BIDSDIR/$projectnm/sub-$SUB/ses-$SESS/func
 	OUTDIR=$QCDIR/$projectnm/sub-$SUB/ses-$SESS/task-$task
 
+	# Get the number of volumes this run SHOULD have
+	volcounts=/projects/b1134/tools/boldqc/volume_counts.txt
+	taskname=${task//[0-9]/}
+
+	while IFS=, read -r PROJECT TASK VOLCOUNT
+	do
+		if [ $projectnm == $PROJECT ] && [ $taskname == $TASK ] ; then
+			this_volcount=$VOLCOUNT
+		fi
+	done < $volcounts
+
+	if [ -z $this_volcount ];
+	then
+		echo "WARNING: You haven't added $projectnm $taskname's total frame count to:"
+		echo "/projects/b1134/tools/boldqc/volume_counts.txt"
+		echo "If the number of volumes in your file is incorrect, it won't be noted on the QC PDF."
+		echo ""
+		vols_match=TRUE
+	else
+		totpts=$(fslinfo $i | awk '{print $2}' | awk 'FNR == 5 {print}')
+		if [ "$this_volcount" = "$totpts" ]; then
+			vols_match=TRUE
+		else
+			vols_match=FALSE
+			if !(echo $filename | grep -Eq "^.*echo.*$"); then
+				echo "WARNING: Volume counts are NOT correct for $projectnm $SUB $SESS $task"
+				echo ""
+			else
+				echo_num=$(echo $filename | awk -F 'echo-' '{print $2}' | cut -d'_' -f1)
+				echo "WARNING: Volume counts are NOT correct for $projectnm $SUB $SESS $task echo $echo_num"
+				echo ""
+			fi
+		fi
+	fi
+
 	if (echo $filename | grep -Eq "^.*echo-1_bold.*$"); then 
 		print_header=1
 		header=$(echo "$projectnm $SUB $SESS $task")
@@ -87,7 +122,7 @@ do
 			ech=${#array_oc[@]}
 
 			#cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
-			cmd="sbatch /projects/b1134/tools/boldqc/$qcv1 $i $numskip $ech"
+			cmd="sbatch /projects/b1134/tools/boldqc/$qcv1 $i $numskip $ech $vols_match"
 
 			#echo $cmd
 
@@ -124,7 +159,7 @@ do
 		#ls $OUTDIR/$outfile
 
 		#cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
-		cmd="sbatch /projects/b1134/tools/boldqc/$qcv2 $i $numskip"
+		cmd="sbatch /projects/b1134/tools/boldqc/$qcv2 $i $numskip $vols_match"
 		#echo $cmd
 
 		jid=$($cmd | cut -d ' ' -f4)

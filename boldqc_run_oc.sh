@@ -18,6 +18,7 @@
 SCAN=$1
 n=$2
 ech=$3
+vols_match=$4
 
 module load fsl
 
@@ -320,7 +321,7 @@ module load fftw/3.3.3-gcc
 
 module load R/3.6.0
 
-Rscript /projects/b1134/tools/boldqc/boldqc_report/boldqc_report_run_oc.R "$projectnm" "$SUB" "$SESS" "$task" "$acq" "$filename" "$filename_oc"
+Rscript /projects/b1134/tools/boldqc/boldqc_report/boldqc_report_run_oc.R "$projectnm" "$SUB" "$SESS" "$task" "$acq" "$filename" "$filename_oc" "$vols_match"
 rm $OUTPATH/Rplots.pdf
 
 # Cleanup
