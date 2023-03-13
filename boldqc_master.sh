@@ -9,12 +9,14 @@
 
 # Braga Lab BOLD QC Master Pipeline
 # Created by R. Braga on November 2020
+# Adapted by M. Lakshman & N. Anderson for Optimal Combination on October 2022
 
 # Usage:
 # sh /projects/b1134/tools/boldqc/boldqc_master.sh
 # Run boldqc for all bold runs in raw/bids directory
 
-qcv=boldqc_run_210421.sh
+qcv1=boldqc_run_oc.sh
+qcv2=boldqc_run_230201.sh
 
 BIDSDIR=/projects/b1134/raw/bids
 
@@ -31,47 +33,103 @@ echo "-----"; echo "Will save QC output to: $QCDIR"; echo "-----"
 echo "Project  -  Subject  -  Session  -  Task"
 
 
-for i in `ls $BIDSDIR/*/sub-*/ses-*/func/*_bold.nii.gz 2> /dev/null`
+#for i in `ls $BIDSDIR/*/sub-*/ses-*/func/*_bold.nii.gz 2> /dev/null`
+for i in `ls $BIDSDIR/DBNO/sub-*/ses-*/func/*_bold.nii.gz 2> /dev/null`
 do
-#echo "Running QC for file: $i"
-filename=$(basename $i '.nii.gz')
+	#echo "Running QC for file: $i"
+	filename=$(basename $i '.nii.gz')
 
-projectnm=$(echo $i | cut -d'/' -f6)
-SUB=$(echo $filename | awk -F 'sub-' '{print $2}' | cut -d'_' -f1)
-SESS=$(echo $filename | awk -F 'ses-' '{print $2}' | cut -d'_' -f1)
-task=$(echo $filename | awk -F 'task-' '{print $2}' | cut -d'_' -f1)
-acq=$(echo $filename | awk -F 'acq-' '{print $2}' | cut -d'_' -f1)
+	projectnm=$(echo $i | cut -d'/' -f6)
+	SUB=$(echo $filename | awk -F 'sub-' '{print $2}' | cut -d'_' -f1)
+	SESS=$(echo $filename | awk -F 'ses-' '{print $2}' | cut -d'_' -f1)
+	task=$(echo $filename | awk -F 'task-' '{print $2}' | cut -d'_' -f1)
+	acq=$(echo $filename | awk -F 'acq-' '{print $2}' | cut -d'_' -f1)
 
-echo "$projectnm $SUB $SESS $task"
-DATAPATH=$BIDSDIR/$projectnm/sub-$SUB/ses-$SESS/func
-OUTDIR=$QCDIR/$projectnm/sub-$SUB/ses-$SESS/task-$task
+	DATAPATH=$BIDSDIR/$projectnm/sub-$SUB/ses-$SESS/func
+	OUTDIR=$QCDIR/$projectnm/sub-$SUB/ses-$SESS/task-$task
 
-outfile=${filename}_qcreport.pdf
+	if (echo $filename | grep -Eq "^.*echo-1_bold.*$"); then 
+		print_header=1
+		header=$(echo "$projectnm $SUB $SESS $task")
 
-if [ ! -s $OUTDIR/$outfile ]; then 
+		outfile=sub-${SUB}_ses-${SESS}_task-${task}_acq-${acq}_echo-oc_bold_qcreport.pdf
 
-#Skip n vols based on TR (12 seconds)
-tr=$(fslinfo $i | awk '{print $2}' | awk 'FNR == 10 {print}')
-#numskip=$(echo "( 12/$tr ) /1" | bc)
-numskip=`printf %.0f $(echo "( 12/$tr ) /1" | bc -l)`
-#numskip=0 
+		if [ ! -s $OUTDIR/$outfile ]; then 
+			echo $header
+			print_header=0
+			echo "----- Opt-comb"
+
+			#Skip n vols based on TR (12 seconds)
+			tr=$(fslinfo $i | awk '{print $2}' | awk 'FNR == 10 {print}')
+			#numskip=$(echo "( 12/$tr ) /1" | bc)
+			numskip=`printf %.0f $(echo "( 12/$tr ) /1" | bc -l)`
+			#numskip=0 
+
+			#echo $DATAPATH/${filename}.nii.gz
+			#echo $OUTDIR/$outfile
+
+			array_oc=()
+
+			for j in `ls $DATAPATH 2> /dev/null`
+			do
+
+				filename_oc=$(basename $j '.nii.gz')
+
+				task_oc=$(echo $filename_oc | awk -F 'task-' '{print $2}' | cut -d'_' -f1)
+
+				if [ $task = $task_oc ] && (echo $j | grep -Eq "^.*_bold\.nii\.gz$"); then
+
+					array_oc+=($j)
+
+				fi
+			done
+
+			ech=${#array_oc[@]}
+
+			#cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
+			cmd="sbatch /projects/b1134/tools/boldqc/$qcv1 $i $numskip $ech"
+
+			#echo $cmd
+
+			jid=$($cmd | cut -d ' ' -f4)
+
+			#echo $ech
+
+		fi
+	fi
+
+	outfile=${filename}_qcreport.pdf
+
+	if [ ! -s $OUTDIR/$outfile ]; then 
+		if !(echo $filename | grep -Eq "^.*echo.*$"); then
+			echo "$projectnm $SUB $SESS $task"
+			echo "----- Single echo"
+		else
+			if [ "$print_header" = "1" ]; then
+				echo $header
+				print_header=0
+			fi
+			echo_num=$(echo $filename | awk -F 'echo-' '{print $2}' | cut -d'_' -f1)
+			echo "----- Echo $echo_num"
+		fi
+
+		#Skip n vols based on TR (12 seconds)
+		tr=$(fslinfo $i | awk '{print $2}' | awk 'FNR == 10 {print}')
+		#numskip=$(echo "( 12/$tr ) /1" | bc)
+		numskip=`printf %.0f $(echo "( 12/$tr ) /1" | bc -l)`
+		#numskip=0 
 
 
-ls $DATAPATH/${filename}.nii.gz
-ls $OUTDIR/$outfile
+		#ls $DATAPATH/${filename}.nii.gz
+		#ls $OUTDIR/$outfile
 
-#cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
-cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
-echo $cmd
+		#cmd="sbatch /projects/b1134/tools/boldqc/$qcv $i $numskip"
+		cmd="sbatch /projects/b1134/tools/boldqc/$qcv2 $i $numskip"
+		#echo $cmd
 
-jid=$($cmd | cut -d ' ' -f4)
+		jid=$($cmd | cut -d ' ' -f4)
 
-else
-
-echo "----- Skipping"
-
-fi
-
+	fi 
 done
 
 # Collate QCs into sessions
